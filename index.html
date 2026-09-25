@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
+<title>MUSIC CD</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600&display=swap');
 :root{
@@ -37,7 +37,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 .time-row{display:flex;justify-content:space-between;font-size:9px;color:var(--screen-dim);margin-top:2px;letter-spacing:1px;}
 
 .controls-row{display:flex;align-items:center;justify-content:center;gap:16px;}
-.ctrl-btn{width:52px;height:52px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.ctrl-btn{width:52px;height:52px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);}
 .ctrl-btn.play{width:66px;height:66px;background:var(--accent);color:var(--pad-text);border-color:var(--accent);font-size:22px;}
 .ctrl-btn.play:hover{background:var(--accent2);border-color:var(--accent2);color:var(--pad-text);}
@@ -50,6 +50,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 .btn:hover{border-color:var(--accent);color:var(--accent);}
 .btn.green{border-color:var(--accent2);color:var(--accent2);}
 .btn.green:hover{background:var(--accent2);color:#001a10;}
+.btn.danger{border-color:var(--accent3);color:var(--accent3);}
+.btn.danger:hover{background:var(--accent3);color:#fff;}
+.btn.active{background:var(--accent);color:var(--pad-text);border-color:var(--accent);}
 #fileInput{display:none;}
 
 .playlist-wrap{flex:1;display:flex;flex-direction:column;min-height:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;}
@@ -63,6 +66,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 .pl-title{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pl-item.active .pl-title{color:var(--accent);}
 .pl-dur{font-family:var(--font-mono);font-size:9px;color:var(--text2);flex-shrink:0;}
+.pl-fav{background:none;border:none;font-size:14px;cursor:pointer;padding:0 2px;flex-shrink:0;color:var(--text2);}
+.pl-fav.on{color:#ffd166;}
 .pl-badge{font-size:11px;flex-shrink:0;width:16px;text-align:center;}
 .pl-del{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;flex-shrink:0;}
 .pl-del:hover{color:var(--accent3);}
@@ -105,9 +110,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
   </div>
 
   <div class="controls-row">
-    <button class="ctrl-btn" onclick="prevSong()">⏮</button>
+    <button class="ctrl-btn" onclick="prevSong()">←</button>
     <button class="ctrl-btn play" id="playBtn" onclick="togglePlay()">▶</button>
-    <button class="ctrl-btn" onclick="nextSong()">⏭</button>
+    <button class="ctrl-btn" onclick="nextSong()">→</button>
   </div>
 
   <div class="vol-row">
@@ -116,7 +121,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 
   <div class="actions-row">
     <button class="btn green" onclick="document.getElementById('fileInput').click()">+ AGGIUNGI CANZONI</button>
+    <button class="btn" id="favBtn" onclick="toggleFavFilter()">★ PREFERITI</button>
     <button class="btn" id="syncBtn" style="display:none" onclick="syncLocalToCloud()">☁ SINCRONIZZA</button>
+    <button class="btn danger" onclick="eliminaTutto()">🗑 ELIMINA TUTTO</button>
     <input type="file" id="fileInput" accept="audio/*" multiple onchange="handleFiles(this.files)">
   </div>
 
@@ -190,6 +197,13 @@ function idbDelBlob(id){
     tx.oncomplete=()=>res(); tx.onerror=e=>rej(e);
   }));
 }
+function idbClearAll(){
+  return idbOpen().then(d=>new Promise((res,rej)=>{
+    const tx=d.transaction('songs','readwrite');
+    tx.objectStore('songs').clear();
+    tx.oncomplete=()=>res(); tx.onerror=e=>rej(e);
+  }));
+}
 
 /* HELPERS */
 function arrayBufferToBase64(buffer){
@@ -219,26 +233,44 @@ function getAudioDuration(blob){
 /* PLAYLIST STATE */
 let playlist=JSON.parse(localStorage.getItem('musicacd_playlist')||'[]');
 let currentIdx=-1;
+let showFavOnly=false;
 const audioEl=new Audio();
 audioEl.volume=0.8;
 
 function savePlaylist(){ localStorage.setItem('musicacd_playlist',JSON.stringify(playlist)); }
 
+function toggleFavFilter(){
+  showFavOnly=!showFavOnly;
+  document.getElementById('favBtn').classList.toggle('active',showFavOnly);
+  renderPlaylist();
+}
+
 function renderPlaylist(){
   const list=document.getElementById('plList');
-  document.getElementById('plHead').textContent=playlist.length+' CANZONI';
-  if(!playlist.length){ list.innerHTML='<div class="pl-empty">[ NESSUNA CANZONE - CARICANE UNA ]</div>'; return; }
+  const shown=showFavOnly?playlist.filter(s=>s.fav):playlist;
+  document.getElementById('plHead').textContent=shown.length+(showFavOnly?' PREFERITI':' CANZONI');
+  if(!shown.length){ list.innerHTML='<div class="pl-empty">[ '+(showFavOnly?'NESSUN PREFERITO':'NESSUNA CANZONE - CARICANE UNA')+' ]</div>'; return; }
   list.innerHTML='';
-  playlist.forEach((s,i)=>{
+  shown.forEach((s,i)=>{
+    const realIdx=playlist.indexOf(s);
     const row=document.createElement('div');
-    row.className='pl-item'+(i===currentIdx?' active':'');
-    row.innerHTML=`<span class="pl-num">${i+1}</span><span class="pl-title">${s.title}</span><span class="pl-dur">${s.duration?formatTime(s.duration):''}</span><span class="pl-badge" title="${s.synced?'sincronizzata':'solo su questo dispositivo'}">${s.synced?'☁':'📱'}</span><button class="pl-del" onclick="event.stopPropagation();delSong('${s.id}')">×</button>`;
-    row.onclick=()=>playSong(i);
-    row.ondblclick=(e)=>{ if(e.target.classList.contains('pl-del'))return; renameSong(s.id); };
+    row.className='pl-item'+(realIdx===currentIdx?' active':'');
+    row.innerHTML=`<span class="pl-num">${i+1}</span><span class="pl-title">${s.title}</span><span class="pl-dur">${s.duration?formatTime(s.duration):''}</span><button class="pl-fav${s.fav?' on':''}" onclick="event.stopPropagation();toggleFav('${s.id}')">${s.fav?'★':'☆'}</button><span class="pl-badge" title="${s.synced?'sincronizzata':'solo su questo dispositivo'}">${s.synced?'☁':'📱'}</span><button class="pl-del" onclick="event.stopPropagation();delSong('${s.id}')">×</button>`;
+    row.onclick=()=>playSong(realIdx);
+    row.ondblclick=(e)=>{ if(e.target.closest('.pl-del')||e.target.closest('.pl-fav'))return; renameSong(s.id); };
     list.appendChild(row);
   });
   const hasUnsynced=playlist.some(s=>!s.synced);
   document.getElementById('syncBtn').style.display=(auth.currentUser&&hasUnsynced)?'':'none';
+}
+
+/* PREFERITI */
+function toggleFav(id){
+  const s=playlist.find(x=>x.id===id); if(!s)return;
+  s.fav=!s.fav; savePlaylist(); renderPlaylist();
+  if(s.synced&&auth.currentUser){
+    db.collection('musicaCD').doc(auth.currentUser.uid).collection('canzoni').doc(id).update({fav:s.fav}).catch(e=>console.error(e));
+  }
 }
 
 /* UPLOAD */
@@ -247,7 +279,7 @@ async function handleFiles(files){
     const id='song'+Date.now()+Math.floor(Math.random()*10000);
     const duration=await getAudioDuration(file);
     await idbPutBlob(id,file);
-    const meta={id,title:file.name.replace(/\.[^.]+$/,''),size:file.size,mimeType:file.type||'audio/mpeg',duration,ordine:Date.now(),synced:false};
+    const meta={id,title:file.name.replace(/\.[^.]+$/,''),size:file.size,mimeType:file.type||'audio/mpeg',duration,ordine:Date.now(),fav:false,synced:false};
     playlist.push(meta);
     savePlaylist(); renderPlaylist();
     if(auth.currentUser){ await uploadSongToCloud(meta,file); }
@@ -266,7 +298,7 @@ async function uploadSongToCloud(meta,fileOrBlob){
     const chunks=[];
     for(let i=0;i<base64.length;i+=chunkSize) chunks.push(base64.slice(i,i+chunkSize));
     const songRef=db.collection('musicaCD').doc(uid).collection('canzoni').doc(meta.id);
-    await songRef.set({title:meta.title,mimeType:meta.mimeType,size:meta.size,duration:meta.duration,ordine:meta.ordine,numChunks:chunks.length});
+    await songRef.set({title:meta.title,mimeType:meta.mimeType,size:meta.size,duration:meta.duration,ordine:meta.ordine,fav:meta.fav||false,numChunks:chunks.length});
     for(let i=0;i<chunks.length;i++){
       await songRef.collection('chunks').doc(String(i).padStart(5,'0')).set({d:chunks[i]});
     }
@@ -301,7 +333,7 @@ async function fetchSongBlob(meta){
   return blob;
 }
 
-/* RINOMINA / ELIMINA */
+/* RINOMINA / ELIMINA SINGOLA */
 async function renameSong(id){
   const s=playlist.find(x=>x.id===id); if(!s)return;
   const nt=prompt('Nuovo nome:',s.title);
@@ -329,6 +361,32 @@ async function delSong(id){
     await songRef.delete().catch(e=>console.error(e));
   }
   showToast('CANZONE ELIMINATA');
+}
+
+/* ELIMINA TUTTA LA LIBRERIA */
+async function eliminaTutto(){
+  if(!playlist.length){ showToast('LIBRERIA GIA VUOTA'); return; }
+  if(!confirm('Eliminare TUTTA la libreria musicale (anche dal cloud)? Operazione irreversibile.'))return;
+  audioEl.pause(); audioEl.src=''; currentIdx=-1;
+  document.getElementById('nowTitle').textContent='NESSUNA CANZONE';
+  updatePlayBtn();
+  await idbClearAll();
+  if(auth.currentUser){
+    try{
+      const uid=auth.currentUser.uid;
+      const songsSnap=await db.collection('musicaCD').doc(uid).collection('canzoni').get();
+      for(const doc of songsSnap.docs){
+        const chunksSnap=await doc.ref.collection('chunks').get();
+        const batch=db.batch();
+        chunksSnap.forEach(c=>batch.delete(c.ref));
+        await batch.commit();
+        await doc.ref.delete();
+      }
+    }catch(e){ console.error(e); showToast('ERRORE ELIMINAZIONE CLOUD',true); }
+  }
+  playlist=[];
+  savePlaylist(); renderPlaylist();
+  showToast('LIBRERIA ELIMINATA');
 }
 
 /* PLAYER */
@@ -438,7 +496,7 @@ async function sincronizzaAllAccesso(uid){
     snap.forEach(doc=>{
       const d=doc.data();
       if(!playlist.find(s=>s.id===doc.id)){
-        playlist.push({id:doc.id,title:d.title,size:d.size,mimeType:d.mimeType,duration:d.duration,ordine:d.ordine,synced:true});
+        playlist.push({id:doc.id,title:d.title,size:d.size,mimeType:d.mimeType,duration:d.duration,ordine:d.ordine,fav:d.fav||false,synced:true});
       }
     });
     playlist.sort((a,b)=>(a.ordine||0)-(b.ordine||0));
