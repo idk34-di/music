@@ -26,26 +26,42 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 .app-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;text-decoration:none;cursor:pointer;transition:color .15s;white-space:nowrap;}
 .app-title:hover{color:var(--accent2);}
 
-.main-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:1rem;gap:1rem;max-width:640px;margin:0 auto;width:100%;}
+.main-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;padding:1.4rem 1rem;gap:1.4rem;max-width:520px;margin:0 auto;width:100%;}
 
-.screen{background:var(--screen-bg);border:1px solid #002233;border-radius:3px;padding:11px 15px;font-family:var(--font-mono);}
-.screen-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.screen-label{color:var(--screen-text);font-size:11px;letter-spacing:2px;}
-.screen-right{color:var(--screen-text);font-size:12px;letter-spacing:1px;}
-.now-title{color:var(--screen-text);font-size:15px;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px;min-height:19px;}
+/* CASSETTE */
+.deck{width:100%;display:flex;flex-direction:column;align-items:center;gap:1.2rem;}
+.cassette-body{width:100%;max-width:340px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px 18px;box-shadow:0 6px 18px rgba(0,0,0,.25);transition:transform .25s;}
+.cassette-body.ejecting{transform:translateY(-14px) scale(1.02);}
+.cassette-label{background:var(--screen-bg);border:1px solid #002233;border-radius:3px;padding:8px 10px;font-family:var(--font-mono);color:var(--screen-text);font-size:13px;letter-spacing:1px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:12px;}
+.cassette-window{background:var(--screen-bg);border:1px solid #002233;border-radius:6px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;position:relative;}
+.cassette-window::before{content:'';position:absolute;left:24%;right:24%;top:50%;height:1px;background:var(--screen-dim);}
+.reel{width:52px;height:52px;border-radius:50%;background:repeating-conic-gradient(var(--text2) 0deg 8deg, transparent 8deg 90deg);border:2px solid var(--text2);position:relative;animation:spin 2.8s linear infinite;animation-play-state:paused;z-index:1;}
+.reel .hub{position:absolute;top:50%;left:50%;width:14px;height:14px;background:var(--screen-bg);border:2px solid var(--text2);border-radius:50%;transform:translate(-50%,-50%);}
+.reel.playing{animation-play-state:running;}
+.reel.fast-fwd{animation-duration:.35s;}
+.reel.fast-rew{animation-duration:.35s;animation-direction:reverse;}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.cassette-screws{display:flex;justify-content:space-between;margin-top:12px;padding:0 4px;}
+.cassette-screws span{width:6px;height:6px;border-radius:50%;background:var(--border);}
+
+.counter-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--screen-dim);width:100%;max-width:340px;}
 .seek{width:100%;accent-color:var(--screen-text);cursor:pointer;}
-.time-row{display:flex;justify-content:space-between;font-size:9px;color:var(--screen-dim);margin-top:2px;letter-spacing:1px;}
 
-.controls-row{display:flex;align-items:center;justify-content:center;gap:16px;}
-.ctrl-btn{width:52px;height:52px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.controls-row{display:flex;align-items:center;justify-content:center;gap:14px;}
+.ctrl-btn{width:52px;height:52px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;user-select:none;touch-action:manipulation;}
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);}
-.ctrl-btn.play{width:66px;height:66px;background:var(--accent);color:var(--pad-text);border-color:var(--accent);font-size:22px;}
+.ctrl-btn:active{background:var(--surface2);}
+.ctrl-btn.play{width:64px;height:64px;background:var(--accent);color:var(--pad-text);border-color:var(--accent);font-size:22px;}
 .ctrl-btn.play:hover{background:var(--accent2);border-color:var(--accent2);color:var(--pad-text);}
 
-.vol-row{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:14px;color:var(--text2);}
+.stop-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.ctrl-btn.stop{width:52px;height:52px;border-radius:50%;border:1px solid var(--accent3);color:var(--accent3);background:var(--surface);font-size:16px;}
+.ctrl-btn.stop:hover{background:var(--accent3);color:#fff;}
+.stop-hint{font-family:var(--font-mono);font-size:8px;color:var(--text2);letter-spacing:.5px;text-align:center;}
+
+.vol-row{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:14px;color:var(--text2);width:100%;max-width:340px;}
 .vol-row input[type=range]{flex:1;accent-color:var(--accent);}
 
-.actions-row{display:flex;gap:8px;flex-wrap:wrap;}
 .btn{padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:var(--font-mono);font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .1s;}
 .btn:hover{border-color:var(--accent);color:var(--accent);}
 .btn.green{border-color:var(--accent2);color:var(--accent2);}
@@ -54,29 +70,36 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 .btn.danger:hover{background:var(--accent3);color:#fff;}
 .btn.active{background:var(--accent);color:var(--pad-text);border-color:var(--accent);}
 #fileInput{display:none;}
+.open-lib{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--text2);background:none;border:none;cursor:pointer;text-decoration:underline;}
+.open-lib:hover{color:var(--accent);}
 
-.playlist-wrap{flex:1;display:flex;flex-direction:column;min-height:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;}
-.pl-head{padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:9px;color:var(--text2);letter-spacing:1px;}
-.pl-list{overflow-y:auto;}
-.pl-empty{padding:2rem 1rem;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text2);letter-spacing:1px;}
-.pl-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
-.pl-item:hover{background:var(--surface2);}
-.pl-item.active{background:var(--surface2);border-left:3px solid var(--accent);}
-.pl-num{font-family:var(--font-mono);font-size:10px;color:var(--text2);width:18px;flex-shrink:0;}
-.pl-title{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.pl-item.active .pl-title{color:var(--accent);}
-.pl-dur{font-family:var(--font-mono);font-size:9px;color:var(--text2);flex-shrink:0;}
-.pl-fav{background:none;border:none;font-size:14px;cursor:pointer;padding:0 2px;flex-shrink:0;color:var(--text2);}
-.pl-fav.on{color:#ffd166;}
-.pl-badge{font-size:11px;flex-shrink:0;width:16px;text-align:center;}
-.pl-del{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;flex-shrink:0;}
-.pl-del:hover{color:var(--accent3);}
+/* LIBRARY OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.show{opacity:1;pointer-events:auto;}
+.overlay-panel{background:var(--surface);border-top:1px solid var(--border);border-radius:14px 14px 0 0;width:100%;max-width:640px;max-height:82vh;display:flex;flex-direction:column;transform:translateY(20px);transition:transform .2s;}
+.overlay.show .overlay-panel{transform:translateY(0);}
+.overlay-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.overlay-head .screen-label{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;}
+.overlay-actions{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--border);}
+.carousel{display:flex;gap:12px;overflow-x:auto;padding:16px;scroll-snap-type:x proximity;}
+.cass-card{flex:0 0 128px;scroll-snap-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:transform .15s,border-color .15s;}
+.cass-card:hover{border-color:var(--accent);transform:translateY(-3px);}
+.cass-card.active{border-color:var(--accent);}
+.cass-mini{width:100%;height:46px;background:var(--screen-bg);border-radius:3px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.mini-reel{width:14px;height:14px;border-radius:50%;background:repeating-conic-gradient(var(--text2) 0deg 8deg, transparent 8deg 90deg);border:1px solid var(--text2);}
+.cass-title{font-family:var(--font-mono);font-size:10px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;}
+.cass-dur{font-family:var(--font-mono);font-size:8px;color:var(--text2);}
+.cass-btns{display:flex;gap:8px;align-items:center;}
+.cass-btns button{background:none;border:none;color:var(--text2);font-size:13px;cursor:pointer;padding:0 2px;}
+.cass-btns button.fav.on{color:#ffd166;}
+.cass-btns button.del:hover{color:var(--accent3);}
+.pl-empty{padding:2rem 1rem;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text2);letter-spacing:1px;width:100%;}
 
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--accent);color:var(--pad-text);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;padding:9px 18px;border-radius:2px;z-index:9998;transition:transform .3s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--accent3);color:#fff;}
 
-::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 @media(max-width:400px){.app-title{font-size:9px;letter-spacing:1px;}}
 </style>
 </head>
@@ -99,39 +122,55 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.6r
 
 <div class="main-wrap">
 
-  <div class="screen">
-    <div class="screen-top">
-      <span class="screen-label">NOW PLAYING</span>
-      <span class="screen-right" id="syncStatus"></span>
+  <div class="deck">
+    <div class="cassette-body" id="cassetteBody">
+      <div class="cassette-label" id="cassetteLabel">NESSUNA CASSETTA</div>
+      <div class="cassette-window">
+        <div class="reel" id="reelL"><div class="hub"></div></div>
+        <div class="reel" id="reelR"><div class="hub"></div></div>
+      </div>
+      <div class="cassette-screws"><span></span><span></span><span></span><span></span></div>
     </div>
-    <div class="now-title" id="nowTitle">NESSUNA CANZONE</div>
-    <input type="range" class="seek" id="seekBar" min="0" max="100" value="0">
-    <div class="time-row"><span id="curTime">0:00</span><span id="durTime">0:00</span></div>
+
+    <div class="counter-row"><span id="curTime">0:00</span><span id="durTime">0:00</span></div>
+    <input type="range" class="seek" id="seekBar" min="0" max="100" value="0" style="max-width:340px">
+
+    <div class="controls-row">
+      <button class="ctrl-btn" id="rewBtn">◀◀</button>
+      <button class="ctrl-btn play" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="ctrl-btn" id="ffBtn">▶▶</button>
+    </div>
+
+    <div class="stop-wrap">
+      <button class="ctrl-btn stop" id="stopBtn">⏹</button>
+      <span class="stop-hint">1× STOP · 2× CAMBIA CASSETTA</span>
+    </div>
+
+    <div class="vol-row">
+      🔉 <input type="range" id="volBar" min="0" max="100" value="80"> 🔊
+    </div>
+
+    <button class="open-lib" onclick="openLibrary()">📼 apri libreria cassette</button>
   </div>
 
-  <div class="controls-row">
-    <button class="ctrl-btn" onclick="prevSong()">←</button>
-    <button class="ctrl-btn play" id="playBtn" onclick="togglePlay()">▶</button>
-    <button class="ctrl-btn" onclick="nextSong()">→</button>
-  </div>
+</div>
 
-  <div class="vol-row">
-    🔉 <input type="range" id="volBar" min="0" max="100" value="80"> 🔊
+<!-- LIBRARY OVERLAY -->
+<div class="overlay" id="libraryOverlay">
+  <div class="overlay-panel">
+    <div class="overlay-head">
+      <span class="screen-label" id="libHeadCount">LIBRERIA CASSETTE</span>
+      <button class="btn" onclick="closeLibrary()">× CHIUDI</button>
+    </div>
+    <div class="overlay-actions">
+      <button class="btn green" onclick="document.getElementById('fileInput').click()">+ AGGIUNGI</button>
+      <button class="btn" id="favBtn" onclick="toggleFavFilter()">★ PREFERITI</button>
+      <button class="btn" id="syncBtn" style="display:none" onclick="syncLocalToCloud()">☁ SINCRONIZZA</button>
+      <button class="btn danger" onclick="eliminaTutto()">🗑 ELIMINA TUTTO</button>
+      <input type="file" id="fileInput" accept="audio/*" multiple onchange="handleFiles(this.files)">
+    </div>
+    <div class="carousel" id="carousel"></div>
   </div>
-
-  <div class="actions-row">
-    <button class="btn green" onclick="document.getElementById('fileInput').click()">+ AGGIUNGI CANZONI</button>
-    <button class="btn" id="favBtn" onclick="toggleFavFilter()">★ PREFERITI</button>
-    <button class="btn" id="syncBtn" style="display:none" onclick="syncLocalToCloud()">☁ SINCRONIZZA</button>
-    <button class="btn danger" onclick="eliminaTutto()">🗑 ELIMINA TUTTO</button>
-    <input type="file" id="fileInput" accept="audio/*" multiple onchange="handleFiles(this.files)">
-  </div>
-
-  <div class="playlist-wrap">
-    <div class="pl-head" id="plHead">0 CANZONI</div>
-    <div class="pl-list" id="plList"></div>
-  </div>
-
 </div>
 
 <script>
@@ -236,38 +275,45 @@ let currentIdx=-1;
 let showFavOnly=false;
 const audioEl=new Audio();
 audioEl.volume=0.8;
+const reelL=document.getElementById('reelL'), reelR=document.getElementById('reelR');
+const cassetteLabel=document.getElementById('cassetteLabel');
+const cassetteBody=document.getElementById('cassetteBody');
 
 function savePlaylist(){ localStorage.setItem('musicacd_playlist',JSON.stringify(playlist)); }
 
+/* LIBRERIA (overlay a carosello) */
+function openLibrary(){
+  document.getElementById('libraryOverlay').classList.add('show');
+  renderCarousel();
+}
+function closeLibrary(){ document.getElementById('libraryOverlay').classList.remove('show'); }
 function toggleFavFilter(){
   showFavOnly=!showFavOnly;
   document.getElementById('favBtn').classList.toggle('active',showFavOnly);
-  renderPlaylist();
+  renderCarousel();
 }
-
-function renderPlaylist(){
-  const list=document.getElementById('plList');
+function renderCarousel(){
+  const wrap=document.getElementById('carousel');
   const shown=showFavOnly?playlist.filter(s=>s.fav):playlist;
-  document.getElementById('plHead').textContent=shown.length+(showFavOnly?' PREFERITI':' CANZONI');
-  if(!shown.length){ list.innerHTML='<div class="pl-empty">[ '+(showFavOnly?'NESSUN PREFERITO':'NESSUNA CANZONE - CARICANE UNA')+' ]</div>'; return; }
-  list.innerHTML='';
-  shown.forEach((s,i)=>{
+  document.getElementById('libHeadCount').textContent=shown.length+(showFavOnly?' PREFERITI':' CASSETTE');
+  if(!shown.length){ wrap.innerHTML='<div class="pl-empty">[ '+(showFavOnly?'NESSUN PREFERITO':'NESSUNA CASSETTA - AGGIUNGINE UNA')+' ]</div>'; return; }
+  wrap.innerHTML='';
+  shown.forEach(s=>{
     const realIdx=playlist.indexOf(s);
-    const row=document.createElement('div');
-    row.className='pl-item'+(realIdx===currentIdx?' active':'');
-    row.innerHTML=`<span class="pl-num">${i+1}</span><span class="pl-title">${s.title}</span><span class="pl-dur">${s.duration?formatTime(s.duration):''}</span><button class="pl-fav${s.fav?' on':''}" onclick="event.stopPropagation();toggleFav('${s.id}')">${s.fav?'★':'☆'}</button><span class="pl-badge" title="${s.synced?'sincronizzata':'solo su questo dispositivo'}">${s.synced?'☁':'📱'}</span><button class="pl-del" onclick="event.stopPropagation();delSong('${s.id}')">×</button>`;
-    row.onclick=()=>playSong(realIdx);
-    row.ondblclick=(e)=>{ if(e.target.closest('.pl-del')||e.target.closest('.pl-fav'))return; renameSong(s.id); };
-    list.appendChild(row);
+    const card=document.createElement('div');
+    card.className='cass-card'+(realIdx===currentIdx?' active':'');
+    card.innerHTML=`<div class="cass-mini"><div class="mini-reel"></div><div class="mini-reel"></div></div><div class="cass-title">${s.title}</div><div class="cass-dur">${s.duration?formatTime(s.duration):''} ${s.synced?'☁':'📱'}</div><div class="cass-btns"><button class="fav${s.fav?' on':''}" onclick="event.stopPropagation();toggleFav('${s.id}')">${s.fav?'★':'☆'}</button><button onclick="event.stopPropagation();renameSong('${s.id}')">✎</button><button class="del" onclick="event.stopPropagation();delSong('${s.id}')">×</button></div>`;
+    card.onclick=()=>{ playSong(realIdx); closeLibrary(); };
+    wrap.appendChild(card);
   });
-  const hasUnsynced=playlist.some(s=>!s.synced);
+  const hasUnsynced=playlist.some(x=>!x.synced);
   document.getElementById('syncBtn').style.display=(auth.currentUser&&hasUnsynced)?'':'none';
 }
 
 /* PREFERITI */
 function toggleFav(id){
   const s=playlist.find(x=>x.id===id); if(!s)return;
-  s.fav=!s.fav; savePlaylist(); renderPlaylist();
+  s.fav=!s.fav; savePlaylist(); renderCarousel();
   if(s.synced&&auth.currentUser){
     db.collection('musicaCD').doc(auth.currentUser.uid).collection('canzoni').doc(id).update({fav:s.fav}).catch(e=>console.error(e));
   }
@@ -281,11 +327,11 @@ async function handleFiles(files){
     await idbPutBlob(id,file);
     const meta={id,title:file.name.replace(/\.[^.]+$/,''),size:file.size,mimeType:file.type||'audio/mpeg',duration,ordine:Date.now(),fav:false,synced:false};
     playlist.push(meta);
-    savePlaylist(); renderPlaylist();
+    savePlaylist(); renderCarousel();
     if(auth.currentUser){ await uploadSongToCloud(meta,file); }
   }
   document.getElementById('fileInput').value='';
-  showToast('CANZONI AGGIUNTE');
+  showToast('CASSETTE AGGIUNTE');
 }
 
 async function uploadSongToCloud(meta,fileOrBlob){
@@ -302,7 +348,7 @@ async function uploadSongToCloud(meta,fileOrBlob){
     for(let i=0;i<chunks.length;i++){
       await songRef.collection('chunks').doc(String(i).padStart(5,'0')).set({d:chunks[i]});
     }
-    meta.synced=true; savePlaylist(); renderPlaylist();
+    meta.synced=true; savePlaylist(); renderCarousel();
     showToast('SINCRONIZZATA');
   }catch(e){
     console.error('Errore upload:',e);
@@ -336,21 +382,21 @@ async function fetchSongBlob(meta){
 /* RINOMINA / ELIMINA SINGOLA */
 async function renameSong(id){
   const s=playlist.find(x=>x.id===id); if(!s)return;
-  const nt=prompt('Nuovo nome:',s.title);
+  const nt=prompt('Nuovo nome cassetta:',s.title);
   if(!nt||!nt.trim())return;
-  s.title=nt.trim(); savePlaylist(); renderPlaylist();
+  s.title=nt.trim(); savePlaylist(); renderCarousel();
   if(s.synced&&auth.currentUser){
     db.collection('musicaCD').doc(auth.currentUser.uid).collection('canzoni').doc(id).update({title:s.title}).catch(e=>console.error(e));
   }
-  if(currentIdx>=0&&playlist[currentIdx].id===id) document.getElementById('nowTitle').textContent=s.title;
+  if(currentIdx>=0&&playlist[currentIdx].id===id) cassetteLabel.textContent=s.title;
 }
 async function delSong(id){
   const s=playlist.find(x=>x.id===id); if(!s)return;
-  if(!confirm('Eliminare "'+s.title+'"?'))return;
+  if(!confirm('Eliminare la cassetta "'+s.title+'"?'))return;
   const idx=playlist.findIndex(x=>x.id===id);
-  if(idx===currentIdx){ audioEl.pause(); audioEl.src=''; currentIdx=-1; document.getElementById('nowTitle').textContent='NESSUNA CANZONE'; updatePlayBtn(); }
+  if(idx===currentIdx){ stopPlayback(); currentIdx=-1; cassetteLabel.textContent='NESSUNA CASSETTA'; }
   playlist=playlist.filter(x=>x.id!==id);
-  savePlaylist(); renderPlaylist();
+  savePlaylist(); renderCarousel();
   await idbDelBlob(id);
   if(s.synced&&auth.currentUser){
     const songRef=db.collection('musicaCD').doc(auth.currentUser.uid).collection('canzoni').doc(id);
@@ -360,16 +406,15 @@ async function delSong(id){
     await batch.commit().catch(e=>console.error(e));
     await songRef.delete().catch(e=>console.error(e));
   }
-  showToast('CANZONE ELIMINATA');
+  showToast('CASSETTA ELIMINATA');
 }
 
 /* ELIMINA TUTTA LA LIBRERIA */
 async function eliminaTutto(){
   if(!playlist.length){ showToast('LIBRERIA GIA VUOTA'); return; }
-  if(!confirm('Eliminare TUTTA la libreria musicale (anche dal cloud)? Operazione irreversibile.'))return;
-  audioEl.pause(); audioEl.src=''; currentIdx=-1;
-  document.getElementById('nowTitle').textContent='NESSUNA CANZONE';
-  updatePlayBtn();
+  if(!confirm('Eliminare TUTTA la libreria (anche dal cloud)? Operazione irreversibile.'))return;
+  stopPlayback(); currentIdx=-1;
+  cassetteLabel.textContent='NESSUNA CASSETTA';
   await idbClearAll();
   if(auth.currentUser){
     try{
@@ -385,19 +430,19 @@ async function eliminaTutto(){
     }catch(e){ console.error(e); showToast('ERRORE ELIMINAZIONE CLOUD',true); }
   }
   playlist=[];
-  savePlaylist(); renderPlaylist();
+  savePlaylist(); renderCarousel();
   showToast('LIBRERIA ELIMINATA');
 }
 
 /* PLAYER */
 async function playSong(idx){
   const s=playlist[idx]; if(!s)return;
-  currentIdx=idx; renderPlaylist();
-  document.getElementById('nowTitle').textContent=s.title;
+  currentIdx=idx;
+  cassetteLabel.textContent=s.title;
   let blob=await idbGetBlob(s.id);
   if(!blob){
     if(!s.synced){ showToast('FILE NON DISPONIBILE SU QUESTO DISPOSITIVO',true); return; }
-    if(!auth.currentUser){ showToast('ACCEDI PER SCARICARE QUESTA CANZONE',true); return; }
+    if(!auth.currentUser){ showToast('ACCEDI PER SCARICARE QUESTA CASSETTA',true); return; }
     showToast('SCARICAMENTO...');
     try{ blob=await fetchSongBlob(s); }catch(e){ console.error(e); showToast('ERRORE SCARICAMENTO',true); return; }
   }
@@ -408,16 +453,29 @@ async function playSong(idx){
   }
 }
 function togglePlay(){
-  if(currentIdx===-1){ if(playlist.length) playSong(0); return; }
+  if(currentIdx===-1){ if(playlist.length) playSong(0); else openLibrary(); return; }
   if(audioEl.paused) audioEl.play(); else audioEl.pause();
 }
-function prevSong(){ if(!playlist.length)return; playSong((currentIdx-1+playlist.length)%playlist.length); }
-function nextSong(){ if(!playlist.length)return; playSong((currentIdx+1)%playlist.length); }
-function updatePlayBtn(){ document.getElementById('playBtn').textContent=audioEl.paused?'▶':'⏸'; }
+function stopPlayback(){ audioEl.pause(); audioEl.currentTime=0; updatePlayBtn(); }
+
+let lastStopTap=0;
+document.getElementById('stopBtn').addEventListener('click',()=>{
+  const now=Date.now();
+  stopPlayback();
+  if(now-lastStopTap<450){ cassetteBody.classList.add('ejecting'); setTimeout(()=>cassetteBody.classList.remove('ejecting'),250); openLibrary(); }
+  lastStopTap=now;
+});
+
+function updatePlayBtn(){
+  const playing=!audioEl.paused;
+  document.getElementById('playBtn').textContent=playing?'⏸':'▶';
+  reelL.classList.toggle('playing',playing);
+  reelR.classList.toggle('playing',playing);
+}
 
 audioEl.addEventListener('play',updatePlayBtn);
 audioEl.addEventListener('pause',updatePlayBtn);
-audioEl.addEventListener('ended',nextSong);
+audioEl.addEventListener('ended',()=>{ if(playlist.length) playSong((currentIdx+1)%playlist.length); });
 audioEl.addEventListener('timeupdate',()=>{
   if(audioEl.duration){ document.getElementById('seekBar').value=(audioEl.currentTime/audioEl.duration)*100; }
   document.getElementById('curTime').textContent=formatTime(audioEl.currentTime);
@@ -428,14 +486,39 @@ document.getElementById('seekBar').addEventListener('input',function(){
 });
 document.getElementById('volBar').addEventListener('input',function(){ audioEl.volume=this.value/100; });
 
+/* RIAVVOLGIMENTO / AVANZAMENTO (tieni premuto) */
+let seekInterval=null;
+function startSeek(dir,btn){
+  if(currentIdx===-1)return;
+  reelL.classList.add(dir>0?'fast-fwd':'fast-rew');
+  reelR.classList.add(dir>0?'fast-fwd':'fast-rew');
+  audioEl.currentTime=Math.min(Math.max(audioEl.currentTime+dir*2,0),audioEl.duration||0);
+  seekInterval=setInterval(()=>{
+    audioEl.currentTime=Math.min(Math.max(audioEl.currentTime+dir*2,0),audioEl.duration||0);
+  },120);
+}
+function stopSeek(){
+  clearInterval(seekInterval); seekInterval=null;
+  reelL.classList.remove('fast-fwd','fast-rew');
+  reelR.classList.remove('fast-fwd','fast-rew');
+  updatePlayBtn();
+}
+const rewBtn=document.getElementById('rewBtn'), ffBtn=document.getElementById('ffBtn');
+['mousedown','touchstart'].forEach(ev=>{
+  rewBtn.addEventListener(ev,e=>{e.preventDefault();startSeek(-1);});
+  ffBtn.addEventListener(ev,e=>{e.preventDefault();startSeek(1);});
+});
+['mouseup','mouseleave','touchend'].forEach(ev=>{
+  rewBtn.addEventListener(ev,stopSeek);
+  ffBtn.addEventListener(ev,stopSeek);
+});
+
 if('mediaSession' in navigator){
   navigator.mediaSession.setActionHandler('play',()=>audioEl.play());
   navigator.mediaSession.setActionHandler('pause',()=>audioEl.pause());
-  navigator.mediaSession.setActionHandler('previoustrack',prevSong);
-  navigator.mediaSession.setActionHandler('nexttrack',nextSong);
+  navigator.mediaSession.setActionHandler('previoustrack',()=>{ if(playlist.length) playSong((currentIdx-1+playlist.length)%playlist.length); });
+  navigator.mediaSession.setActionHandler('nexttrack',()=>{ if(playlist.length) playSong((currentIdx+1)%playlist.length); });
 }
-
-renderPlaylist();
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
@@ -485,14 +568,14 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById("user-info").textContent=user.displayName||user.email;
     await sincronizzaAllAccesso(user.uid);
   }
-  renderPlaylist();
+  renderCarousel();
 });
 
 /* AL LOGIN: unisce la libreria cloud con quella locale */
 async function sincronizzaAllAccesso(uid){
   try{
-    document.getElementById('syncStatus').textContent='SYNC...';
-    const snap=await db.collection('musicaCD').doc(uid).collection('canzoni').get();
+    const ref=db.collection('musicaCD').doc(uid).collection('canzoni');
+    const snap=await ref.get();
     snap.forEach(doc=>{
       const d=doc.data();
       if(!playlist.find(s=>s.id===doc.id)){
@@ -501,11 +584,9 @@ async function sincronizzaAllAccesso(uid){
     });
     playlist.sort((a,b)=>(a.ordine||0)-(b.ordine||0));
     savePlaylist();
-    document.getElementById('syncStatus').textContent='';
     showToast('LIBRERIA SINCRONIZZATA');
   }catch(e){
     console.error("Errore sync:",e);
-    document.getElementById('syncStatus').textContent='';
     showToast('SYNC FALLITA',true);
   }
 }
